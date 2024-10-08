@@ -1,31 +1,18 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- 适配移动设备 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- 强制全屏显示，隐藏地址栏（仅适用于部分浏览器） -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- 设置状态栏颜色 -->
-    <meta name="theme-color" content="#000000">
-    <!-- PWA 配置 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
     <link rel="manifest" href="manifest.json">
-    <title>会议倒计时</title>
+    <title>Event Countdown Timer</title>
     <style>
-        :root {
-            --bg-color: #1a1a1a;
-            --timer-color: #ffffff;
-            --control-bg-color: transparent;
-            --control-text-color: #ffffff;
-            --accent-color: #ff5722;
-        }
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            font-family: Arial, sans-serif;
             text-align: center;
             padding: 0;
-            background-color: var(--bg-color);
-            color: var(--timer-color);
+            background-color: #282c34;
+            color: #ffffff;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -35,145 +22,124 @@
             overflow: hidden;
         }
         #timer {
-            font-size: calc(20vh);
+            font-size: calc(50vw + 25vh);
             margin: 0;
-            color: var(--timer-color);
+            color: #61dafb;
             flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            line-height: 1;
-            user-select: none;
-        }
-        @media (orientation: landscape) {
-            #timer {
-                font-size: calc(20vw);
-            }
         }
         .controls {
             display: flex;
             justify-content: center;
             gap: 1em;
-            margin-bottom: 1em;
+            margin-top: 1em;
             width: 100%;
-            max-width: 500px;
-            padding: 0 1em;
+            max-width: 400px;
         }
         .controls button {
-            font-size: 1em;
-            padding: 0.5em;
+            font-size: 1.5em;
+            padding: 1em;
             border: none;
-            background-color: var(--control-bg-color);
-            color: var(--control-text-color);
+            border-radius: 10px;
+            background-color: #61dafb;
+            color: #282c34;
             cursor: pointer;
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 40px;
-            height: 40px;
+            max-width: 80px;
+            max-height: 80px;
         }
         .controls button:hover {
-            color: var(--accent-color);
+            background-color: #21a1f1;
         }
-        .controls button svg {
-            width: 24px;
-            height: 24px;
+        .controls button img {
+            width: 48px;
+            height: 48px;
         }
         .settings-popup {
             display: none;
             position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-            padding: 1em;
-            z-index: 1000;
-        }
-        .settings-content {
-            background-color: #2c2c2c;
-            padding: 1em;
-            border-radius: 10px;
-            width: 100%;
-            max-width: 300px;
-            text-align: left;
-        }
-        .settings-content h3 {
-            margin-top: 0;
-            color: #fff;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #444;
+            padding: 2em;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            width: 90%;
+            max-width: 400px;
             text-align: center;
         }
-        .settings-content label {
+        .settings-popup label {
             margin: 0.5em 0;
             display: block;
-            font-size: 1em;
-            color: #fff;
+            font-size: 1.2em;
         }
-        .settings-content input {
+        .settings-popup input {
             width: 100%;
-            padding: 0.3em;
-            margin-bottom: 0.5em;
+            padding: 0.5em;
+            margin-bottom: 1em;
             border: none;
             border-radius: 5px;
-            background-color: #444;
-            color: #fff;
+        }
+        #settings-button {
+            background-color: #ffa500;
+            color: #282c34;
         }
         #close-settings {
             margin-top: 1em;
-            padding: 0.5em;
-            background-color: var(--accent-color);
-            color: #fff;
+            padding: 0.7em;
+            background-color: #61dafb;
+            color: #282c34;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             width: 100%;
+        }
+        @media (orientation: portrait) {
+            #timer {
+                font-size: calc(40vw + 20vh);
+            }
+            .controls {
+                flex-direction: row;
+            }
+        }
+        @media (orientation: landscape) {
+            #timer {
+                font-size: calc(25vw + 25vh);
+            }
         }
     </style>
 </head>
 <body>
     <div id="timer">01:00</div>
     <div class="controls">
-        <button id="settings-button" aria-label="设置">
-            <svg viewBox="0 0 24 24">
-                <!-- 齿轮图标 -->
-                <path fill="currentColor" d="M12,15.5A3.5,3.5 0 1,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97L21.6,11.1L19.7,8.3L17.13,8.56C16.96,7.94 16.7,7.36 16.37,6.82L17.68,4.71L15.07,3.13L13.8,5.15C13.27,4.95 12.67,4.83 12,4.83C11.33,4.83 10.73,4.95 10.2,5.15L8.93,3.13L6.32,4.71L7.63,6.82C7.3,7.36 7.04,7.94 6.87,8.56L4.3,8.3L2.4,11.1L4.57,12.97C4.54,13.31 4.5,13.65 4.5,14C4.5,14.35 4.54,14.69 4.57,15.03L2.4,16.9L4.3,19.7L6.87,19.44C7.04,20.06 7.3,20.64 7.63,21.18L6.32,23.29L8.93,24.87L10.2,22.85C10.73,23.05 11.33,23.17 12,23.17C12.67,23.17 13.27,23.05 13.8,22.85L15.07,24.87L17.68,23.29L16.37,21.18C16.7,20.64 16.96,20.06 17.13,19.44L19.7,19.7L21.6,16.9L19.43,15.03C19.46,14.69 19.5,14.35 19.5,14C19.5,13.65 19.46,13.31 19.43,12.97Z" />
-            </svg>
-        </button>
-        <button id="start" aria-label="开始">
-            <svg viewBox="0 0 24 24">
-                <path fill="currentColor" d="M8 5v14l11-7z"/>
-            </svg>
-        </button>
-        <button id="pause" aria-label="暂停">
-            <svg viewBox="0 0 24 24">
-                <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-            </svg>
-        </button>
-        <button id="reset" aria-label="重置">
-            <svg viewBox="0 0 24 24">
-                <path fill="currentColor" d="M13 3a9 9 0 0 1 0 18c-4.97 0-9-4.03-9-9H1l4-4 4 4H6a7 7 0 1 0 7-7V3z"/>
-            </svg>
-        </button>
+        <button id="settings-button"><img src="https://img.icons8.com/material-rounded/50/ffffff/settings.png" alt="Settings"></button>
+        <button id="start"><img src="https://img.icons8.com/ios-glyphs/50/ffffff/play.png" alt="Start"></button>
+        <button id="pause"><img src="https://img.icons8.com/ios-glyphs/50/ffffff/pause.png" alt="Pause"></button>
+        <button id="reset"><img src="https://img.icons8.com/ios-glyphs/50/ffffff/refresh.png" alt="Reset"></button>
     </div>
     <div class="settings-popup" id="settings-container">
-        <div class="settings-content">
-            <h3>设置</h3>
-            <label for="timeInput">倒计时时间（秒）：</label>
-            <input type="number" id="timeInput" value="60" min="1">
-            <label for="bgColor">背景颜色：</label>
-            <input type="color" id="bgColor" value="#1a1a1a">
-            <label for="timerColor">计时器颜色：</label>
-            <input type="color" id="timerColor" value="#ffffff">
-            <button id="close-settings">保存设置</button>
-        </div>
+        <h3>Settings</h3>
+        <label for="timeInput">Countdown Time (seconds): </label>
+        <input type="number" id="timeInput" value="60" min="1">
+        <label for="bgColor">Background Color: </label>
+        <input type="color" id="bgColor" value="#282c34">
+        <label for="timerColor">Clock Color: </label>
+        <input type="color" id="timerColor" value="#61dafb">
+        <button id="close-settings">Save Settings</button>
     </div>
     <script>
-        // Service Worker 注册（保持不变）
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js').then(registration => {
-                    console.log('ServiceWorker 注册成功：', registration.scope);
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
                 }, err => {
-                    console.log('ServiceWorker 注册失败：', err);
+                    console.log('ServiceWorker registration failed: ', err);
                 });
             });
         }
@@ -206,7 +172,6 @@
                 timer = setInterval(() => {
                     if (remainingTime <= 0) {
                         clearInterval(timer);
-                        navigator.vibrate(500);
                     } else {
                         remainingTime--;
                         updateDisplay(remainingTime);
@@ -229,23 +194,21 @@
         }
 
         function toggleSettings() {
-            settingsContainer.style.display = 'flex';
+            settingsContainer.style.display = 'block';
         }
 
         function saveSettings() {
             document.body.style.backgroundColor = bgColorInput.value;
             timerDisplay.style.color = timerColorInput.value;
-            document.documentElement.style.setProperty('--bg-color', bgColorInput.value);
-            document.documentElement.style.setProperty('--timer-color', timerColorInput.value);
             remainingTime = parseInt(timeInput.value);
             updateDisplay(remainingTime);
             settingsContainer.style.display = 'none';
         }
 
         function preventScreenSleep() {
-            if ('wakeLock' in navigator) {
+            if (navigator.wakeLock && navigator.wakeLock.request) {
                 navigator.wakeLock.request('screen').catch((err) => {
-                    console.error('屏幕常亮请求失败：', err);
+                    console.error('Wake Lock request failed:', err);
                 });
             }
         }
@@ -256,7 +219,7 @@
         pauseButton.addEventListener('click', pauseTimer);
         resetButton.addEventListener('click', resetTimer);
 
-        // 初始设置
+        // Initial setup
         resetTimer();
     </script>
 </body>
