@@ -162,6 +162,9 @@
             max-width: 50px;
             max-height: 50px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         #fullscreen-button:hover {
             color: var(--accent-color);
@@ -177,7 +180,8 @@
     <div id="timer">01:00</div>
     <button id="fullscreen-button" aria-label="Fullscreen">
         <svg viewBox="0 0 24 24">
-            <path fill="currentColor" d="M14,4L20,4C21.1,4 22,4.9 22,6L22,12L20,12L20,7.41L14.71,12.71L13.29,11.29L18.59,6L14,6L14,4M4,6L9.29,11.29L7.87,12.71L2.59,7.41L2,12L4,12L4,6C4,4.9 4.9,4 6,4L12,4L12,6L6,6L6,11.41L11.29,6.12L12.71,7.54L7.41,12.83L12,12.83L12,14.83L6,14.83C4.9,14.83 4,13.93 4,12.83L4,6M12,18L12,20L6,20C4.9,20 4,19.1 4,18L4,14.83L6,14.83L6,18L12,18M18,18L14,18L14,20L18,20C19.1,20 20,19.1 20,18L20,14.83L22,14.83L22,18C22,19.1 21.1,20 20,20L14,20L14,18L18,18Z" />
+            <!-- 正确的全屏图标路径 -->
+            <path fill="currentColor" d="M4,4H9V6H6V9H4M4,15H6V18H9V20H4M15,4H20V9H18V6H15M18,15H20V20H15V18H18" />
         </svg>
     </button>
     <div class="controls">
