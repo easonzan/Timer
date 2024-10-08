@@ -19,7 +19,7 @@
         :root {
             --bg-color: #000000;
             --timer-color: #FFFFFF;
-            --control-bg-color: transparent;
+            --control-bg-color: #333;
             --control-text-color: #FFFFFF;
             --accent-color: #ff5722;
         }
@@ -74,11 +74,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         .controls button:hover {
             color: var(--accent-color);
+            background-color: #444;
         }
         .controls button svg {
             width: 24px;
@@ -100,11 +103,12 @@
         }
         .settings-content {
             background-color: #2c2c2c;
-            padding: 1em;
-            border-radius: 10px;
+            padding: 1.5em;
+            border-radius: 15px;
             width: 100%;
-            max-width: 300px;
-            text-align: left;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
         }
         .settings-content h3 {
             margin-top: 0;
@@ -112,15 +116,15 @@
             text-align: center;
         }
         .settings-content label {
-            margin: 0.5em 0;
+            margin: 1em 0 0.5em;
             display: block;
             font-size: 1em;
             color: #fff;
         }
         .settings-content input {
-            width: 100%;
-            padding: 0.3em;
-            margin-bottom: 0.5em;
+            width: calc(100% - 1em);
+            padding: 0.5em;
+            margin-bottom: 1em;
             border: none;
             border-radius: 5px;
             background-color: #444;
@@ -128,13 +132,14 @@
         }
         #close-settings {
             margin-top: 1em;
-            padding: 0.5em;
+            padding: 0.7em;
             background-color: var(--accent-color);
             color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
             width: 100%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         /* Install button styles */
         #install-button {
@@ -182,55 +187,4 @@
                 <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
             </svg>
         </button>
-        <button id="reset" aria-label="Reset">
-            <svg viewBox="0 0 24 24">
-                <path fill="currentColor" d="M13 3a9 9 0 0 1 0 18c-4.97 0-9-4.03-9-9H1l4-4 4 4H6a7 7 0 1 0 7-7V3z"/>
-            </svg>
-        </button>
-    </div>
-    <!-- Install button -->
-    <button id="install-button">Install App</button>
-    <div class="settings-popup" id="settings-container">
-        <div class="settings-content">
-            <h3>Settings</h3>
-            <label for="timeInput">Countdown Time (seconds):</label>
-            <input type="number" id="timeInput" value="60" min="1">
-            <label for="bgColor">Background Color:</label>
-            <input type="color" id="bgColor" value="#000000">
-            <label for="timerColor">Timer Color:</label>
-            <input type="color" id="timerColor" value="#ffffff">
-            <button id="close-settings">Save Settings</button>
-        </div>
-    </div>
-    <script>
-        // Register the service worker
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-            .then(registration => {
-                console.log('ServiceWorker registration successful with scope:', registration.scope);
-            })
-            .catch(error => {
-                console.log('ServiceWorker registration failed:', error);
-            });
-        }
-
-        // Handle the install prompt
-        let deferredPrompt;
-        const installButton = document.getElementById('install-button');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            // Prevent the mini-infobar from appearing on mobile
-            e.preventDefault();
-            // Stash the event so it can be triggered later.
-            deferredPrompt = e;
-            // Update UI to notify the user they can install the PWA
-            installButton.style.display = 'block';
-        });
-
-        installButton.addEventListener('click', (e) => {
-            // Hide the install button
-            installButton.style.display = 'none';
-            // Show the install prompt
-            deferredPrompt.prompt();
-            // Wait for the user to respond to the prompt
-            deferredPrompt.userChoice.then((choiceResult) =>
+       
