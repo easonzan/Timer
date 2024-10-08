@@ -7,7 +7,6 @@
     <!-- 强制全屏显示 -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- 设置状态栏颜色 -->
     <meta name="theme-color" content="#000000">
     <!-- 链接到 manifest 文件 -->
@@ -44,7 +43,7 @@
             position: relative;
         }
         #timer {
-            font-size: calc(20vw);
+            font-size: calc(25vmin);
             margin: 0;
             color: var(--timer-color);
             display: flex;
@@ -52,6 +51,11 @@
             align-items: center;
             line-height: 1;
             user-select: none;
+        }
+        @media (orientation: landscape) {
+            #timer {
+                font-size: calc(25vmax);
+            }
         }
         .controls {
             position: absolute;
@@ -63,7 +67,7 @@
             gap: 1em;
         }
         .controls button {
-            font-size: 1.5em;
+            font-size: 1.2em;
             padding: 0.5em;
             border: none;
             background-color: var(--control-bg-color);
@@ -72,8 +76,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 60px;
-            height: 60px;
+            width: 12vw;
+            height: 12vw;
+            max-width: 60px;
+            max-height: 60px;
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
@@ -82,8 +88,8 @@
             background-color: #444;
         }
         .controls button svg {
-            width: 30px;
-            height: 30px;
+            width: 50%;
+            height: 50%;
         }
         .settings-popup {
             display: none;
@@ -139,25 +145,41 @@
             width: 100%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-        /* 安装按钮样式 */
-        #install-button {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: var(--accent-color);
-            color: #fff;
+        /* 全屏按钮样式 */
+        #fullscreen-button {
+            position: absolute;
+            top: 5%;
+            right: 5%;
+            font-size: 1.2em;
+            padding: 0.5em;
             border: none;
-            border-radius: 5px;
+            background-color: var(--control-bg-color);
+            color: var(--control-text-color);
             cursor: pointer;
-            display: none; /* 默认隐藏 */
+            border-radius: 50%;
+            width: 12vw;
+            height: 12vw;
+            max-width: 50px;
+            max-height: 50px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #fullscreen-button:hover {
+            color: var(--accent-color);
+            background-color: #444;
+        }
+        #fullscreen-button svg {
+            width: 50%;
+            height: 50%;
         }
     </style>
 </head>
 <body>
     <div id="timer">01:00</div>
+    <button id="fullscreen-button" aria-label="Fullscreen">
+        <svg viewBox="0 0 24 24">
+            <path fill="currentColor" d="M14,4L20,4C21.1,4 22,4.9 22,6L22,12L20,12L20,7.41L14.71,12.71L13.29,11.29L18.59,6L14,6L14,4M4,6L9.29,11.29L7.87,12.71L2.59,7.41L2,12L4,12L4,6C4,4.9 4.9,4 6,4L12,4L12,6L6,6L6,11.41L11.29,6.12L12.71,7.54L7.41,12.83L12,12.83L12,14.83L6,14.83C4.9,14.83 4,13.93 4,12.83L4,6M12,18L12,20L6,20C4.9,20 4,19.1 4,18L4,14.83L6,14.83L6,18L12,18M18,18L14,18L14,20L18,20C19.1,20 20,19.1 20,18L20,14.83L22,14.83L22,18C22,19.1 21.1,20 20,20L14,20L14,18L18,18Z" />
+        </svg>
+    </button>
     <div class="controls">
         <button id="settings-button" aria-label="Settings">
             <svg viewBox="0 0 24 24">
@@ -195,8 +217,6 @@
         </div>
     </div>
 
-    <button id="install-button">安装应用</button>
-
     <script>
         let countdown;
         let timeRemaining = 60; // 默认 1 分钟（秒）
@@ -212,6 +232,7 @@
         const timeInput = document.getElementById('time-input');
         const bgColorInput = document.getElementById('bg-color-input');
         const fontColorInput = document.getElementById('font-color-input');
+        const fullscreenButton = document.getElementById('fullscreen-button');
 
         // 以 mm:ss 格式显示时间
         function displayTime(seconds) {
@@ -256,11 +277,7 @@
             settingsPopup.style.display = 'none';
         });
 
-        startButton.addEventListener('click', () => {
-            requestFullScreen(); // 在用户交互中请求全屏
-            startTimer();
-        });
-
+        startButton.addEventListener('click', startTimer);
         pauseButton.addEventListener('click', pauseTimer);
         resetButton.addEventListener('click', resetTimer);
 
@@ -295,6 +312,8 @@
                 docElm.msRequestFullscreen(); // IE/Edge
             }
         }
+
+        fullscreenButton.addEventListener('click', requestFullScreen);
 
         // 初始显示
         displayTime(timeRemaining);
