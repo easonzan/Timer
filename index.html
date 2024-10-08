@@ -22,7 +22,7 @@
             overflow: hidden;
         }
         #timer {
-            font-size: calc(25vw + 15vh);
+            font-size: calc(35vw + 15vh);
             margin: 0;
             color: #61dafb;
             flex-grow: 1;
@@ -32,7 +32,7 @@
         }
         .controls {
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             gap: 1em;
             margin-top: 1em;
             width: 100%;
@@ -40,7 +40,7 @@
         }
         .controls button {
             font-size: 1.5em;
-            padding: 0.7em;
+            padding: 1em;
             border: none;
             border-radius: 10px;
             background-color: #61dafb;
@@ -50,13 +50,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            max-width: 80px;
+            max-height: 80px;
         }
         .controls button:hover {
             background-color: #21a1f1;
         }
         .controls button img {
-            width: 36px;
-            height: 36px;
+            width: 48px;
+            height: 48px;
         }
         .settings-popup {
             display: none;
@@ -71,7 +73,6 @@
             width: 90%;
             max-width: 400px;
             text-align: center;
-            animation: fadeIn 0.3s ease-in-out;
         }
         .settings-popup label {
             margin: 0.5em 0;
@@ -99,18 +100,17 @@
             cursor: pointer;
             width: 100%;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
         @media (orientation: portrait) {
             #timer {
-                font-size: calc(30vw + 20vh);
+                font-size: calc(40vw + 20vh);
+            }
+            .controls {
+                flex-direction: row;
             }
         }
         @media (orientation: landscape) {
             #timer {
-                font-size: calc(20vw + 15vh);
+                font-size: calc(25vw + 25vh);
             }
         }
     </style>
