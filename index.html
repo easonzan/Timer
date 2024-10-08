@@ -16,6 +16,7 @@
     <style>
         :root {
             --vh: 1vh;
+            --vw: 1vw;
             --timer-font-size: calc(var(--vh) * 80);
             --bg-color: #000000;
             --timer-color: #FFFFFF;
@@ -211,13 +212,22 @@
     </div>
 
     <script>
-        // 设置 --vh 变量，解决移动端 100vh 问题
+        // 设置 --vh 和 --vw 变量，解决移动端 100vh 问题
         function setVh() {
             let vh = window.innerHeight * 0.01;
+            let vw = window.innerWidth * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
-            // 更新字体大小
-            let timerFontSize = vh * 80; // 调整倍数以增大字体
-            document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
+            document.documentElement.style.setProperty('--vw', `${vw}px`);
+            // 检测屏幕方向
+            if (window.innerWidth < window.innerHeight) {
+                // 竖屏，使用 vw 计算字体大小
+                let timerFontSize = vw * 20; // 调整倍数以适应竖屏
+                document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
+            } else {
+                // 横屏，使用 vh 计算字体大小
+                let timerFontSize = vh * 80; // 调整倍数以适应横屏
+                document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
+            }
         }
         window.addEventListener('resize', setVh);
         window.addEventListener('orientationchange', setVh);
