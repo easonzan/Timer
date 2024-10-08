@@ -30,6 +30,10 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
+            -webkit-overflow-scrolling: touch;
+            position: fixed; /* Prevents the resizing issue */
+            top: 0;
+            left: 0;
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -40,6 +44,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            touch-action: none; /* Prevent accidental scroll */
         }
         #timer {
             font-size: calc(80vmin);
@@ -155,16 +160,6 @@
             border-radius: 5px;
             cursor: pointer;
             display: none; /* Hidden by default */
-        }
-        /* Fullscreen for iPhone Safari */
-        @supports (-webkit-touch-callout: none) {
-            html,
-            body {
-                min-height: 100%;
-                max-height: 100%;
-                overflow: hidden;
-                -webkit-overflow-scrolling: touch;
-            }
         }
     </style>
 </head>
@@ -288,6 +283,27 @@
 
         fontColorInput.addEventListener('input', () => {
             document.documentElement.style.setProperty('--timer-color', fontColorInput.value);
+        });
+
+        // Fullscreen handling for iPhone Safari
+        function requestFullScreen() {
+            const docElm = document.documentElement;
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            } else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen(); // Firefox
+            } else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen(); // Chrome, Safari, Opera
+            } else if (docElm.msRequestFullscreen) {
+                docElm.msRequestFullscreen(); // IE/Edge
+            }
+        }
+
+        // Request fullscreen when the device rotates to landscape
+        window.addEventListener('orientationchange', () => {
+            if (window.orientation === 90 || window.orientation === -90) {
+                requestFullScreen();
+            }
         });
 
         // Initial display
