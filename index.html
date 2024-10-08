@@ -10,7 +10,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            padding: 1em;
+            padding: 0;
             background-color: #282c34;
             color: #ffffff;
             display: flex;
@@ -21,50 +21,73 @@
             margin: 0;
         }
         #timer {
-            font-size: 8em;
-            margin: 0.5em;
+            font-size: 18em;
+            margin: 0;
             color: #61dafb;
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .controls {
             display: flex;
-            justify-content: center;
+            justify-content: space-around;
             gap: 0.5em;
             margin-top: 1em;
+            width: 100%;
+            max-width: 400px;
         }
         .controls button {
-            font-size: 1.2em;
-            padding: 0.7em;
+            font-size: 0.8em;
+            padding: 0.5em;
             border: none;
             border-radius: 10px;
             background-color: #61dafb;
             color: #282c34;
             cursor: pointer;
             flex: 1;
-            max-width: 100px;
         }
         .controls button:hover {
             background-color: #21a1f1;
         }
-        .settings-container {
+        .settings-popup {
             display: none;
-            flex-direction: column;
-            align-items: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background-color: #333;
-            padding: 1em;
+            padding: 1.5em;
             border-radius: 10px;
-            margin-top: 1em;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 400px;
+            text-align: left;
         }
-        .settings-container label {
+        .settings-popup label {
             margin: 0.5em 0;
+            display: block;
+        }
+        .settings-popup input {
+            width: 100%;
         }
         #settings-button {
             background-color: #ffa500;
             color: #282c34;
         }
+        #close-settings {
+            margin-top: 1em;
+            padding: 0.5em;
+            background-color: #61dafb;
+            color: #282c34;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
-    <h1>Countdown Timer</h1>
     <div id="timer">01:00</div>
     <div class="controls">
         <button id="settings-button">Settings</button>
@@ -72,14 +95,15 @@
         <button id="pause">Pause</button>
         <button id="reset">Reset</button>
     </div>
-    <div class="settings-container" id="settings-container">
+    <div class="settings-popup" id="settings-container">
         <h3>Settings</h3>
         <label for="timeInput">Countdown Time (seconds): </label>
         <input type="number" id="timeInput" value="60" min="1"><br><br>
         <label for="bgColor">Background Color: </label>
         <input type="color" id="bgColor" value="#282c34"><br><br>
         <label for="timerColor">Clock Color: </label>
-        <input type="color" id="timerColor" value="#61dafb">
+        <input type="color" id="timerColor" value="#61dafb"><br><br>
+        <button id="close-settings">Save Settings</button>
     </div>
     <script>
         if ('serviceWorker' in navigator) {
@@ -101,6 +125,7 @@
         const resetButton = document.getElementById('reset');
         const settingsButton = document.getElementById('settings-button');
         const settingsContainer = document.getElementById('settings-container');
+        const closeSettingsButton = document.getElementById('close-settings');
         const timeInput = document.getElementById('timeInput');
         const bgColorInput = document.getElementById('bgColor');
         const timerColorInput = document.getElementById('timerColor');
@@ -141,11 +166,15 @@
         }
 
         function toggleSettings() {
-            if (settingsContainer.style.display === 'none' || settingsContainer.style.display === '') {
-                settingsContainer.style.display = 'flex';
-            } else {
-                settingsContainer.style.display = 'none';
-            }
+            settingsContainer.style.display = 'block';
+        }
+
+        function saveSettings() {
+            document.body.style.backgroundColor = bgColorInput.value;
+            timerDisplay.style.color = timerColorInput.value;
+            remainingTime = parseInt(timeInput.value);
+            updateDisplay(remainingTime);
+            settingsContainer.style.display = 'none';
         }
 
         function preventScreenSleep() {
@@ -157,15 +186,10 @@
         }
 
         settingsButton.addEventListener('click', toggleSettings);
+        closeSettingsButton.addEventListener('click', saveSettings);
         startButton.addEventListener('click', startTimer);
         pauseButton.addEventListener('click', pauseTimer);
         resetButton.addEventListener('click', resetTimer);
-        bgColorInput.addEventListener('input', () => {
-            document.body.style.backgroundColor = bgColorInput.value;
-        });
-        timerColorInput.addEventListener('input', () => {
-            timerDisplay.style.color = timerColorInput.value;
-        });
 
         // Initial setup
         resetTimer();
