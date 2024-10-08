@@ -22,7 +22,7 @@
             overflow: hidden;
         }
         #timer {
-            font-size: calc(25vw + 25vh);
+            font-size: calc(25vw + 15vh);
             margin: 0;
             color: #61dafb;
             flex-grow: 1;
@@ -33,27 +33,30 @@
         .controls {
             display: flex;
             justify-content: space-around;
-            gap: 0.5em;
+            gap: 1em;
             margin-top: 1em;
             width: 100%;
             max-width: 400px;
         }
         .controls button {
             font-size: 1.5em;
-            padding: 0.5em;
+            padding: 0.7em;
             border: none;
             border-radius: 10px;
             background-color: #61dafb;
             color: #282c34;
             cursor: pointer;
             flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .controls button:hover {
             background-color: #21a1f1;
         }
         .controls button img {
-            width: 24px;
-            height: 24px;
+            width: 36px;
+            height: 36px;
         }
         .settings-popup {
             display: none;
@@ -68,6 +71,7 @@
             width: 90%;
             max-width: 400px;
             text-align: center;
+            animation: fadeIn 0.3s ease-in-out;
         }
         .settings-popup label {
             margin: 0.5em 0;
@@ -95,15 +99,29 @@
             cursor: pointer;
             width: 100%;
         }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @media (orientation: portrait) {
+            #timer {
+                font-size: calc(30vw + 20vh);
+            }
+        }
+        @media (orientation: landscape) {
+            #timer {
+                font-size: calc(20vw + 15vh);
+            }
+        }
     </style>
 </head>
 <body>
     <div id="timer">01:00</div>
     <div class="controls">
-        <button id="settings-button"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/settings.png" alt="Settings"></button>
-        <button id="start"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/play.png" alt="Start"></button>
-        <button id="pause"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/pause.png" alt="Pause"></button>
-        <button id="reset"><img src="https://img.icons8.com/ios-glyphs/30/ffffff/refresh.png" alt="Reset"></button>
+        <button id="settings-button"><img src="https://img.icons8.com/ios-glyphs/50/ffffff/settings.png" alt="Settings"></button>
+        <button id="start"><img src="https://img.icons8.com/ios-glyphs/50/ffffff/play.png" alt="Start"></button>
+        <button id="pause"><img src="https://img.icons8.com/ios-glyphs/50/ffffff/pause.png" alt="Pause"></button>
+        <button id="reset"><img src="https://img.icons8.com/ios-glyphs/50/ffffff/refresh.png" alt="Reset"></button>
     </div>
     <div class="settings-popup" id="settings-container">
         <h3>Settings</h3>
