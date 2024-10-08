@@ -31,11 +31,6 @@
             padding: 0;
             overflow: hidden;
             -webkit-overflow-scrolling: touch;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -46,9 +41,9 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            touch-action: none; /* Prevent accidental scroll */
             height: 100vh;
             width: 100vw;
+            position: relative;
         }
         #timer {
             font-size: calc(20vmin);
@@ -59,8 +54,10 @@
             align-items: center;
             line-height: 1;
             user-select: none;
-            width: 100%;
-            height: auto;
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         .controls {
             position: absolute;
@@ -70,7 +67,6 @@
             display: flex;
             justify-content: center;
             gap: 1em;
-            padding: 0 1em;
         }
         .controls button {
             font-size: 1em;
