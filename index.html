@@ -7,6 +7,7 @@
     <!-- Force full-screen display when launched from home screen -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <!-- Set status bar color -->
     <meta name="theme-color" content="#000000">
     <!-- Link to the manifest file -->
@@ -28,7 +29,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: auto;
+            overflow: hidden;
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -156,7 +157,8 @@
             body {
                 min-height: 100%;
                 max-height: 100%;
-                overflow: auto;
+                overflow: hidden;
+                -webkit-overflow-scrolling: touch;
             }
         }
     </style>
@@ -231,74 +233,4 @@
             // Show the install prompt
             deferredPrompt.prompt();
             // Wait for the user to respond to the prompt
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
-                } else {
-                    console.log('User dismissed the install prompt');
-                }
-                deferredPrompt = null;
-            });
-        });
-
-        let timer;
-        let remainingTime;
-        let isPaused = true;
-        const timerDisplay = document.getElementById('timer');
-        const startButton = document.getElementById('start');
-        const pauseButton = document.getElementById('pause');
-        const resetButton = document.getElementById('reset');
-        const settingsButton = document.getElementById('settings-button');
-        const settingsContainer = document.getElementById('settings-container');
-        const closeSettingsButton = document.getElementById('close-settings');
-        const timeInput = document.getElementById('timeInput');
-        const bgColorInput = document.getElementById('bgColor');
-        const timerColorInput = document.getElementById('timerColor');
-
-        function updateDisplay(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainderSeconds = seconds % 60;
-            timerDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
-        }
-
-        function startTimer() {
-            const seconds = parseInt(timeInput.value);
-            if (isPaused) {
-                remainingTime = remainingTime ?? seconds;
-                isPaused = false;
-                timer = setInterval(() => {
-                    if (remainingTime <= 0) {
-                        clearInterval(timer);
-                        navigator.vibrate(500);
-                    } else {
-                        remainingTime--;
-                        updateDisplay(remainingTime);
-                    }
-                }, 1000);
-                preventScreenSleep();
-            }
-        }
-
-        function pauseTimer() {
-            isPaused = true;
-            clearInterval(timer);
-        }
-
-        function resetTimer() {
-            isPaused = true;
-            clearInterval(timer);
-            remainingTime = parseInt(timeInput.value);
-            updateDisplay(remainingTime);
-        }
-
-        function toggleSettings() {
-            settingsContainer.style.display = 'flex';
-        }
-
-        function saveSettings() {
-            document.body.style.backgroundColor = bgColorInput.value;
-            timerDisplay.style.color = timerColorInput.value;
-            document.documentElement.style.setProperty('--bg-color', bgColorInput.value);
-            document.documentElement.style.setProperty('--timer-color', timerColorInput.value);
-            remainingTime = parseInt(timeInput.value);
-            updateDisplay(remainingTime);
+            deferredPrompt.userChoice.then((choiceResult) =>
