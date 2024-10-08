@@ -5,7 +5,6 @@
     <!-- 适配移动设备 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <!-- 启用全屏显示 -->
-    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- 设置状态栏颜色 -->
     <meta name="theme-color" content="#000000">
@@ -17,6 +16,7 @@
     <style>
         :root {
             --vh: 1vh;
+            --timer-font-size: calc(var(--vh) * 80);
             --bg-color: #000000;
             --timer-color: #FFFFFF;
             --control-bg-color: #333;
@@ -30,7 +30,7 @@
             overflow: hidden;
             -webkit-overflow-scrolling: touch;
             width: 100%;
-            height: calc(var(--vh, 1vh) * 100);
+            height: 100%;
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -42,20 +42,19 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            height: calc(var(--vh) * 100);
         }
         #timer {
-            font-size: calc(var(--vh, 1vh) * 40);
+            font-size: var(--timer-font-size);
             margin: 0;
             color: var(--timer-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             line-height: 1;
             user-select: none;
+            white-space: nowrap;
         }
         .controls {
             position: absolute;
-            bottom: 5%;
+            bottom: 2%;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -72,10 +71,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: calc(var(--vh, 1vh) * 12);
-            height: calc(var(--vh, 1vh) * 12);
-            max-width: 50px;
-            max-height: 50px;
+            width: calc(var(--vh) * 10);
+            height: calc(var(--vh) * 10);
+            max-width: 60px;
+            max-height: 60px;
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
@@ -216,8 +215,12 @@
         function setVh() {
             let vh = window.innerHeight * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
+            // 更新字体大小
+            let timerFontSize = vh * 80; // 调整倍数以增大字体
+            document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
         }
         window.addEventListener('resize', setVh);
+        window.addEventListener('orientationchange', setVh);
         setVh();
 
         let countdown;
