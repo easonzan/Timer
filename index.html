@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <!-- Adapt to mobile devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- Force full-screen display, hide address bar (only applies to some browsers) -->
+    <!-- Force full-screen display when launched from home screen -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- Set status bar color -->
     <meta name="theme-color" content="#000000">
-    <!-- PWA Configuration -->
+    <!-- Link to the manifest file -->
     <link rel="manifest" href="manifest.json">
+    <!-- Icons for iOS -->
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <title>Countdown Timer</title>
     <style>
         :root {
@@ -126,6 +128,21 @@
             cursor: pointer;
             width: 100%;
         }
+        /* Install button styles */
+        #install-button {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+        }
     </style>
 </head>
 <body>
@@ -153,29 +170,60 @@
             </svg>
         </button>
     </div>
+    <!-- Install button -->
+    <button id="install-button">Install App</button>
     <div class="settings-popup" id="settings-container">
         <div class="settings-content">
             <h3>Settings</h3>
             <label for="timeInput">Countdown Time (seconds):</label>
             <input type="number" id="timeInput" value="60" min="1">
             <label for="bgColor">Background Color:</label>
-            <input type="color" id="bgColor" value="#1a1a1a">
+            <input type="color" id="bgColor" value="#000000">
             <label for="timerColor">Timer Color:</label>
             <input type="color" id="timerColor" value="#ffffff">
             <button id="close-settings">Save Settings</button>
         </div>
     </div>
     <script>
-        // Service Worker registration (unchanged)
+        // Register the service worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js').then(registration => {
-                    console.log('ServiceWorker registration successful with scope:', registration.scope);
-                }, err => {
-                    console.log('ServiceWorker registration failed:', err);
-                });
+            navigator.serviceWorker.register('service-worker.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful with scope:', registration.scope);
+            })
+            .catch(error => {
+                console.log('ServiceWorker registration failed:', error);
             });
         }
+
+        // Handle the install prompt
+        let deferredPrompt;
+        const installButton = document.getElementById('install-button');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI to notify the user they can install the PWA
+            installButton.style.display = 'block';
+        });
+
+        installButton.addEventListener('click', (e) => {
+            // Hide the install button
+            installButton.style.display = 'none';
+            // Show the install prompt
+            deferredPrompt.prompt();
+            // Wait for the user to respond to the prompt
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                } else {
+                    console.log('User dismissed the install prompt');
+                }
+                deferredPrompt = null;
+            });
+        });
 
         let timer;
         let remainingTime;
