@@ -10,40 +10,76 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            padding: 2em;
-            background-color: #f0f0f0;
+            padding: 1em;
+            background-color: #282c34;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
         #timer {
-            font-size: 5em;
-            margin: 1em;
-            color: #000;
+            font-size: 8em;
+            margin: 0.5em;
+            color: #61dafb;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.5em;
+            margin-top: 1em;
         }
         .controls button {
             font-size: 1.2em;
-            margin: 0.5em;
-            padding: 0.5em 1em;
+            padding: 0.7em;
+            border: none;
+            border-radius: 10px;
+            background-color: #61dafb;
+            color: #282c34;
+            cursor: pointer;
+            flex: 1;
+            max-width: 100px;
         }
-        .settings {
-            margin-top: 2em;
+        .controls button:hover {
+            background-color: #21a1f1;
+        }
+        .settings-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            background-color: #333;
+            padding: 1em;
+            border-radius: 10px;
+            margin-top: 1em;
+        }
+        .settings-container label {
+            margin: 0.5em 0;
+        }
+        #settings-button {
+            background-color: #ffa500;
+            color: #282c34;
         }
     </style>
 </head>
 <body>
     <h1>Countdown Timer</h1>
-    <div id="timer">00:00</div>
+    <div id="timer">01:00</div>
     <div class="controls">
+        <button id="settings-button">Settings</button>
         <button id="start">Start</button>
         <button id="pause">Pause</button>
         <button id="reset">Reset</button>
     </div>
-    <div class="settings">
+    <div class="settings-container" id="settings-container">
         <h3>Settings</h3>
         <label for="timeInput">Countdown Time (seconds): </label>
         <input type="number" id="timeInput" value="60" min="1"><br><br>
         <label for="bgColor">Background Color: </label>
-        <input type="color" id="bgColor" value="#f0f0f0"><br><br>
+        <input type="color" id="bgColor" value="#282c34"><br><br>
         <label for="timerColor">Clock Color: </label>
-        <input type="color" id="timerColor" value="#000000">
+        <input type="color" id="timerColor" value="#61dafb">
     </div>
     <script>
         if ('serviceWorker' in navigator) {
@@ -63,6 +99,8 @@
         const startButton = document.getElementById('start');
         const pauseButton = document.getElementById('pause');
         const resetButton = document.getElementById('reset');
+        const settingsButton = document.getElementById('settings-button');
+        const settingsContainer = document.getElementById('settings-container');
         const timeInput = document.getElementById('timeInput');
         const bgColorInput = document.getElementById('bgColor');
         const timerColorInput = document.getElementById('timerColor');
@@ -86,6 +124,7 @@
                         updateDisplay(remainingTime);
                     }
                 }, 1000);
+                preventScreenSleep();
             }
         }
 
@@ -101,6 +140,23 @@
             updateDisplay(remainingTime);
         }
 
+        function toggleSettings() {
+            if (settingsContainer.style.display === 'none' || settingsContainer.style.display === '') {
+                settingsContainer.style.display = 'flex';
+            } else {
+                settingsContainer.style.display = 'none';
+            }
+        }
+
+        function preventScreenSleep() {
+            if (navigator.wakeLock && navigator.wakeLock.request) {
+                navigator.wakeLock.request('screen').catch((err) => {
+                    console.error('Wake Lock request failed:', err);
+                });
+            }
+        }
+
+        settingsButton.addEventListener('click', toggleSettings);
         startButton.addEventListener('click', startTimer);
         pauseButton.addEventListener('click', pauseTimer);
         resetButton.addEventListener('click', resetTimer);
