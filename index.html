@@ -31,7 +31,7 @@
             padding: 0;
             overflow: hidden;
             -webkit-overflow-scrolling: touch;
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
@@ -51,7 +51,7 @@
             width: 100vw;
         }
         #timer {
-            font-size: calc(30vw);
+            font-size: calc(20vmin);
             margin: 0;
             color: var(--timer-color);
             display: flex;
@@ -60,6 +60,7 @@
             line-height: 1;
             user-select: none;
             width: 100%;
+            height: auto;
         }
         .controls {
             position: fixed;
@@ -69,7 +70,6 @@
             display: flex;
             justify-content: center;
             gap: 1em;
-            width: auto;
             padding: 0 1em;
         }
         .controls button {
