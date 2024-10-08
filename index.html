@@ -291,46 +291,41 @@
             const absoluteSeconds = Math.abs(seconds);
             const minutes = Math.floor(absoluteSeconds / 60);
             const remainderSeconds = absoluteSeconds % 60;
-            const display = `${seconds < 0 ? '-' : ''}${minutes < 10 ? '0' : ''}${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+            const display = `${minutes < 10 ? '0' : ''}${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
             timerDisplay.textContent = display;
         }
 
-        // 计时器逻辑
+        // 倒计时逻辑
         function startTimer() {
             clearInterval(countdown);
-
-            // 如果处于正计时模式，则继续正计时
-            if (isCountingUp) {
-                countUpStartTime = Date.now() - timeRemaining * 1000;
-            } else {
-                const now = Date.now();
-                const then = now + timeRemaining * 1000;
-                displayTime(timeRemaining);
-
-                // 申请屏幕唤醒锁
-                requestWakeLock();
-
-                countdown = setInterval(() => {
-                    timeRemaining = Math.round((then - Date.now()) / 1000);
-                    if (timeRemaining < 0) {
-                        // 倒计时结束，切换到正计时模式
-                        isCountingUp = true;
-                        timeRemaining = 0;
-                        countUpStartTime = Date.now();
-                    }
-                    displayTime(timeRemaining);
-                }, 1000);
-                return;
-            }
-
-            // 正计时逻辑
-            countdown = setInterval(() => {
-                timeRemaining = Math.round((Date.now() - countUpStartTime) / 1000);
-                displayTime(timeRemaining);
-            }, 1000);
+            isCountingUp = false; // 确保从倒计时模式开始
+            const now = Date.now();
+            const then = now + timeRemaining * 1000;
+            displayTime(timeRemaining);
 
             // 申请屏幕唤醒锁
             requestWakeLock();
+
+            countdown = setInterval(() => {
+                timeRemaining = Math.round((then - Date.now()) / 1000);
+                if (timeRemaining >= 0) {
+                    displayTime(timeRemaining);
+                } else {
+                    // 倒计时结束，切换到正计时模式
+                    clearInterval(countdown);
+                    startCountUp();
+                }
+            }, 1000);
+        }
+
+        // 正计时逻辑
+        function startCountUp() {
+            isCountingUp = true;
+            countUpStartTime = Date.now();
+            countdown = setInterval(() => {
+                const elapsed = Math.round((Date.now() - countUpStartTime) / 1000);
+                displayTime(elapsed);
+            }, 1000);
         }
 
         function pauseTimer() {
