@@ -52,6 +52,10 @@
             line-height: 1;
             user-select: none;
             white-space: nowrap;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
         .controls {
             position: absolute;
@@ -208,7 +212,7 @@
 
     <!-- 添加到主屏幕提示 -->
     <div id="install-prompt">
-        为了获得更好的体验，请将此应用添加到主屏幕。
+        添加到主屏幕可获得全屏显示的体验。
         <button id="close-prompt">关闭</button>
     </div>
 
@@ -219,10 +223,11 @@
             let vw = window.innerWidth * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
             document.documentElement.style.setProperty('--vw', `${vw}px`);
+
             // 检测屏幕方向
             if (window.innerWidth < window.innerHeight) {
                 // 竖屏，使用 vw 计算字体大小
-                let timerFontSize = vw * 25; // 增大倍数以适应竖屏
+                let timerFontSize = vw * 30; // 增大倍数以适应竖屏
                 document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
             } else {
                 // 横屏，使用 vh 计算字体大小
