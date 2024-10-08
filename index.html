@@ -31,9 +31,11 @@
             padding: 0;
             overflow: hidden;
             -webkit-overflow-scrolling: touch;
-            position: fixed; /* Prevents the resizing issue */
+            position: absolute;
             top: 0;
             left: 0;
+            right: 0;
+            bottom: 0;
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -45,9 +47,11 @@
             justify-content: center;
             align-items: center;
             touch-action: none; /* Prevent accidental scroll */
+            height: 100vh;
+            width: 100vw;
         }
         #timer {
-            font-size: calc(80vmin);
+            font-size: calc(30vw);
             margin: 0;
             color: var(--timer-color);
             display: flex;
@@ -56,7 +60,6 @@
             line-height: 1;
             user-select: none;
             width: 100%;
-            height: 100%;
         }
         .controls {
             position: fixed;
