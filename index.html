@@ -197,8 +197,8 @@
     <div class="settings-popup" id="settings">
         <div class="settings-content">
             <h3>Settings</h3>
-            <label for="time-input">Set Timer (mm:ss)</label>
-            <input type="text" id="time-input" placeholder="01:00"/>
+            <label for="time-input">Set Timer (minutes)</label>
+            <input type="number" id="time-input" placeholder="1" step="any"/>
             <label for="bg-color-input">Background Color</label>
             <input type="color" id="bg-color-input" value="#000000"/>
             <label for="font-color-input">Font Color</label>
@@ -212,6 +212,7 @@
     <script>
         let countdown;
         let timeRemaining = 60; // default 1 minute in seconds
+        let initialTime = 60;   // store the initial time set by the user
 
         const timerDisplay = document.getElementById('timer');
         const settingsButton = document.getElementById('settings-button');
@@ -254,7 +255,7 @@
 
         function resetTimer() {
             clearInterval(countdown);
-            timeRemaining = 60;
+            timeRemaining = initialTime;
             displayTime(timeRemaining);
         }
 
@@ -273,11 +274,10 @@
 
         // Update settings
         timeInput.addEventListener('change', () => {
-            const timeParts = timeInput.value.split(':');
-            if (timeParts.length === 2) {
-                const minutes = parseInt(timeParts[0], 10);
-                const seconds = parseInt(timeParts[1], 10);
-                timeRemaining = minutes * 60 + seconds;
+            const minutes = parseFloat(timeInput.value);
+            if (!isNaN(minutes) && minutes >= 0) {
+                timeRemaining = Math.round(minutes * 60);
+                initialTime = timeRemaining; // Store the initial time
                 displayTime(timeRemaining);
             }
         });
@@ -292,6 +292,7 @@
 
         // Initial display
         displayTime(timeRemaining);
+        timeInput.value = '1'; // Set default input value to 1 minute
     </script>
 </body>
 </html>
