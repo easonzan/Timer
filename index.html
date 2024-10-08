@@ -43,7 +43,7 @@
             position: relative;
         }
         #timer {
-            font-size: calc(25vmin);
+            font-size: calc(40vmin);
             margin: 0;
             color: var(--timer-color);
             display: flex;
@@ -54,7 +54,7 @@
         }
         @media (orientation: landscape) {
             #timer {
-                font-size: calc(25vmax);
+                font-size: calc(40vmax);
             }
         }
         .controls {
@@ -67,7 +67,7 @@
             gap: 1em;
         }
         .controls button {
-            font-size: 1.2em;
+            font-size: 1em;
             padding: 0.5em;
             border: none;
             background-color: var(--control-bg-color);
@@ -78,8 +78,8 @@
             align-items: center;
             width: 12vw;
             height: 12vw;
-            max-width: 60px;
-            max-height: 60px;
+            max-width: 50px;
+            max-height: 50px;
             border-radius: 50%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
@@ -88,8 +88,8 @@
             background-color: #444;
         }
         .controls button svg {
-            width: 50%;
-            height: 50%;
+            width: 60%;
+            height: 60%;
         }
         .settings-popup {
             display: none;
@@ -145,45 +145,10 @@
             width: 100%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
-        /* 全屏按钮样式 */
-        #fullscreen-button {
-            position: absolute;
-            top: 5%;
-            right: 5%;
-            font-size: 1.2em;
-            padding: 0.5em;
-            border: none;
-            background-color: var(--control-bg-color);
-            color: var(--control-text-color);
-            cursor: pointer;
-            border-radius: 50%;
-            width: 12vw;
-            height: 12vw;
-            max-width: 50px;
-            max-height: 50px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #fullscreen-button:hover {
-            color: var(--accent-color);
-            background-color: #444;
-        }
-        #fullscreen-button svg {
-            width: 50%;
-            height: 50%;
-        }
     </style>
 </head>
 <body>
     <div id="timer">01:00</div>
-    <button id="fullscreen-button" aria-label="Fullscreen">
-        <svg viewBox="0 0 24 24">
-            <!-- 正确的全屏图标路径 -->
-            <path fill="currentColor" d="M4,4H9V6H6V9H4M4,15H6V18H9V20H4M15,4H20V9H18V6H15M18,15H20V20H15V18H18" />
-        </svg>
-    </button>
     <div class="controls">
         <button id="settings-button" aria-label="Settings">
             <svg viewBox="0 0 24 24">
@@ -236,7 +201,6 @@
         const timeInput = document.getElementById('time-input');
         const bgColorInput = document.getElementById('bg-color-input');
         const fontColorInput = document.getElementById('font-color-input');
-        const fullscreenButton = document.getElementById('fullscreen-button');
 
         // 以 mm:ss 格式显示时间
         function displayTime(seconds) {
@@ -302,22 +266,6 @@
         fontColorInput.addEventListener('input', () => {
             document.documentElement.style.setProperty('--timer-color', fontColorInput.value);
         });
-
-        // 全屏处理
-        function requestFullScreen() {
-            const docElm = document.documentElement;
-            if (docElm.requestFullscreen) {
-                docElm.requestFullscreen();
-            } else if (docElm.mozRequestFullScreen) {
-                docElm.mozRequestFullScreen(); // Firefox
-            } else if (docElm.webkitRequestFullScreen) {
-                docElm.webkitRequestFullScreen(); // Chrome, Safari, Opera
-            } else if (docElm.msRequestFullscreen) {
-                docElm.msRequestFullscreen(); // IE/Edge
-            }
-        }
-
-        fullscreenButton.addEventListener('click', requestFullScreen);
 
         // 初始显示
         displayTime(timeRemaining);
