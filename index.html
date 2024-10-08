@@ -129,6 +129,7 @@
             border-radius: 5px;
             background-color: #444;
             color: #fff;
+            text-align: center; /* 居中显示输入的数字 */
         }
         #close-settings {
             margin-top: 1em;
@@ -221,11 +222,11 @@
             // 检测屏幕方向
             if (window.innerWidth < window.innerHeight) {
                 // 竖屏，使用 vw 计算字体大小
-                let timerFontSize = vw * 20; // 调整倍数以适应竖屏
+                let timerFontSize = vw * 25; // 增大倍数以适应竖屏
                 document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
             } else {
                 // 横屏，使用 vh 计算字体大小
-                let timerFontSize = vh * 80; // 调整倍数以适应横屏
+                let timerFontSize = vh * 80; // 保持横屏字体大小
                 document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
             }
         }
@@ -291,29 +292,29 @@
 
         closeSettingsButton.addEventListener('click', () => {
             settingsPopup.style.display = 'none';
+            applySettings(); // 关闭设置时立即生效
         });
 
         startButton.addEventListener('click', startTimer);
         pauseButton.addEventListener('click', pauseTimer);
         resetButton.addEventListener('click', resetTimer);
 
-        // 更新设置
-        timeInput.addEventListener('change', () => {
+        // 应用设置
+        function applySettings() {
+            // 更新计时器时间
             const minutes = parseFloat(timeInput.value);
             if (!isNaN(minutes) && minutes >= 0) {
                 timeRemaining = Math.round(minutes * 60);
-                initialTime = timeRemaining; // 存储初始时间
+                initialTime = timeRemaining;
                 displayTime(timeRemaining);
             }
-        });
 
-        bgColorInput.addEventListener('input', () => {
+            // 更新背景颜色
             document.documentElement.style.setProperty('--bg-color', bgColorInput.value);
-        });
 
-        fontColorInput.addEventListener('input', () => {
+            // 更新字体颜色
             document.documentElement.style.setProperty('--timer-color', fontColorInput.value);
-        });
+        }
 
         // 检测是否从主屏幕启动，显示提示
         if (!window.navigator.standalone) {
