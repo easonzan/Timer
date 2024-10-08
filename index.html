@@ -8,40 +8,40 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- 设置状态栏颜色 -->
-    <meta name="theme-color" content="#ffffff">
+    <meta name="theme-color" content="#000000">
     <!-- PWA 配置 -->
     <link rel="manifest" href="manifest.json">
-    <title>倒计时计时器 PWA</title>
+    <title>会议倒计时</title>
     <style>
         :root {
-            --bg-color: #282c34;
-            --timer-color: #61dafb;
-            --control-bg-color: #61dafb;
-            --control-hover-color: #21a1f1;
-            --control-text-color: #282c34;
+            --bg-color: #000000;
+            --timer-color: #FFFFFF;
+            --control-bg-color: transparent;
+            --control-text-color: #FFFFFF;
         }
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 0;
             background-color: var(--bg-color);
-            color: #ffffff;
+            color: var(--timer-color);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
             overflow: hidden;
         }
         #timer {
-            font-size: calc(10vw + 10vh);
+            font-size: calc(80vh);
             margin: 0;
             color: var(--timer-color);
             flex-grow: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            line-height: 1;
             user-select: none;
         }
         .controls {
@@ -54,26 +54,21 @@
             padding: 0 1em;
         }
         .controls button {
-            font-size: 1.5em;
-            padding: 1em;
+            font-size: 1em;
+            padding: 0.5em;
             border: none;
-            border-radius: 10px;
             background-color: var(--control-bg-color);
             color: var(--control-text-color);
             cursor: pointer;
-            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-width: 60px;
-            min-height: 60px;
-        }
-        .controls button:hover {
-            background-color: var(--control-hover-color);
+            width: 40px;
+            height: 40px;
         }
         .controls button svg {
-            width: 32px;
-            height: 32px;
+            width: 24px;
+            height: 24px;
         }
         .settings-popup {
             display: none;
@@ -86,15 +81,16 @@
         }
         .settings-content {
             background-color: #444;
-            padding: 2em;
-            border-radius: 15px;
+            padding: 1em;
+            border-radius: 10px;
             width: 100%;
-            max-width: 400px;
+            max-width: 300px;
             text-align: left;
         }
         .settings-content h3 {
             margin-top: 0;
             color: #fff;
+            text-align: center;
         }
         .settings-content label {
             margin: 0.5em 0;
@@ -104,18 +100,18 @@
         }
         .settings-content input {
             width: 100%;
-            padding: 0.5em;
-            margin-bottom: 1em;
+            padding: 0.3em;
+            margin-bottom: 0.5em;
             border: none;
             border-radius: 5px;
         }
         #close-settings {
             margin-top: 1em;
-            padding: 0.7em;
+            padding: 0.5em;
             background-color: var(--control-bg-color);
             color: var(--control-text-color);
-            border: none;
-            border-radius: 10px;
+            border: 1px solid #fff;
+            border-radius: 5px;
             cursor: pointer;
             width: 100%;
         }
@@ -124,25 +120,24 @@
 <body>
     <div id="timer">01:00</div>
     <div class="controls">
-        <button id="settings-button" aria-label="Settings">
-            <!-- 使用内联SVG替代外部图片 -->
-            <svg viewBox="0 0 512 512">
-                <path fill="#282c34" d="..."/>
+        <button id="settings-button" aria-label="设置">
+            <svg viewBox="0 0 24 24">
+                <path fill="currentColor" d="M12,8A4,4 0 1,1 8,12A4,4 0 0,1 12,8M3,12A9,9 0 0,1 12,3A9,9 0 0,1 21,12A9,9 0 0,1 12,21A9,9 0 0,1 3,12Z" />
             </svg>
         </button>
-        <button id="start" aria-label="Start">
-            <svg viewBox="0 0 512 512">
-                <path fill="#282c34" d="..."/>
+        <button id="start" aria-label="开始">
+            <svg viewBox="0 0 24 24">
+                <path fill="currentColor" d="M8 5v14l11-7z"/>
             </svg>
         </button>
-        <button id="pause" aria-label="Pause">
-            <svg viewBox="0 0 512 512">
-                <path fill="#282c34" d="..."/>
+        <button id="pause" aria-label="暂停">
+            <svg viewBox="0 0 24 24">
+                <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
             </svg>
         </button>
-        <button id="reset" aria-label="Reset">
-            <svg viewBox="0 0 512 512">
-                <path fill="#282c34" d="..."/>
+        <button id="reset" aria-label="重置">
+            <svg viewBox="0 0 24 24">
+                <path fill="currentColor" d="M13 3a9 9 0 0 1 0 18c-4.97 0-9-4.03-9-9H1l4-4 4 4H6a7 7 0 1 0 7-7V3z"/>
             </svg>
         </button>
     </div>
@@ -152,9 +147,9 @@
             <label for="timeInput">倒计时时间（秒）：</label>
             <input type="number" id="timeInput" value="60" min="1">
             <label for="bgColor">背景颜色：</label>
-            <input type="color" id="bgColor" value="#282c34">
+            <input type="color" id="bgColor" value="#000000">
             <label for="timerColor">计时器颜色：</label>
-            <input type="color" id="timerColor" value="#61dafb">
+            <input type="color" id="timerColor" value="#FFFFFF">
             <button id="close-settings">保存设置</button>
         </div>
     </div>
@@ -198,7 +193,7 @@
                 timer = setInterval(() => {
                     if (remainingTime <= 0) {
                         clearInterval(timer);
-                        navigator.vibrate(200);
+                        navigator.vibrate(500);
                     } else {
                         remainingTime--;
                         updateDisplay(remainingTime);
