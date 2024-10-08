@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <!-- 适配移动设备 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- 强制全屏显示 -->
+    <!-- 启用全屏显示 -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!-- 设置状态栏颜色 -->
@@ -16,6 +16,7 @@
     <title>倒计时</title>
     <style>
         :root {
+            --vh: 1vh;
             --bg-color: #000000;
             --timer-color: #FFFFFF;
             --control-bg-color: #333;
@@ -24,12 +25,12 @@
         }
         html,
         body {
-            width: 100%;
-            height: 100%;
             margin: 0;
             padding: 0;
             overflow: hidden;
             -webkit-overflow-scrolling: touch;
+            width: 100%;
+            height: calc(var(--vh, 1vh) * 100);
         }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
@@ -43,7 +44,7 @@
             position: relative;
         }
         #timer {
-            font-size: calc(40vmin);
+            font-size: calc(var(--vh, 1vh) * 40);
             margin: 0;
             color: var(--timer-color);
             display: flex;
@@ -51,11 +52,6 @@
             align-items: center;
             line-height: 1;
             user-select: none;
-        }
-        @media (orientation: landscape) {
-            #timer {
-                font-size: calc(40vmax);
-            }
         }
         .controls {
             position: absolute;
@@ -76,8 +72,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 12vw;
-            height: 12vw;
+            width: calc(var(--vh, 1vh) * 12);
+            height: calc(var(--vh, 1vh) * 12);
             max-width: 50px;
             max-height: 50px;
             border-radius: 50%;
@@ -145,6 +141,29 @@
             width: 100%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
+        /* 添加到主屏幕提示样式 */
+        #install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--control-bg-color);
+            color: var(--control-text-color);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1001;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #install-prompt button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -153,7 +172,7 @@
         <button id="settings-button" aria-label="Settings">
             <svg viewBox="0 0 24 24">
                 <!-- 齿轮图标 -->
-                <path fill="currentColor" d="M12 15.5C13.93 15.5 15.5 13.93 15.5 12S13.93 8.5 12 8.5 8.5 10.07 8.5 12 10.07 15.5 12 15.5M19.43 12.97C19.46 12.65 19.5 12.33 19.5 12S19.46 11.35 19.43 11.03L21.5 9.9 19.95 7.05 17.75 7.5C17.32 6.85 16.77 6.27 16.13 5.75L16.5 3.5 13.5 2 12 4.5C11.67 4.5 11.33 4.5 11 4.5S10.33 4.5 10 4.5L8.5 2 5.5 3.5 5.87 5.75C5.23 6.27 4.68 6.85 4.25 7.5L2.05 7.05 0.5 9.9 2.57 11.03C2.54 11.35 2.5 11.67 2.5 12S2.54 12.65 2.57 12.97L0.5 14.1 2.05 16.95 4.25 16.5C4.68 17.15 5.23 17.73 5.87 18.25L5.5 20.5 8.5 22 10 19.5C10.33 19.5 10.67 19.5 11 19.5S11.67 19.5 12 19.5L13.5 22 16.5 20.5 16.13 18.25C16.77 17.73 17.32 17.15 17.75 16.5L19.95 16.95 21.5 14.1 19.43 12.97Z" />
+                <path fill="currentColor" d="M12 15.5C13.93 15.5 15.5 13.93 15.5 12S13.93 8.5 12 8.5 8.5 10.07 8.5 12 10.07 15.5 12 15.5M19.43 12.97C19.46 12.65 19.5 12.33 19.5 12S19.46 11.35 19.43 11.03L21.5 9.9L19.95 7.05L17.75 7.5C17.32 6.85 16.77 6.27 16.13 5.75L16.5 3.5L13.5 2L12 4.5C11.67 4.5 11.33 4.5 11 4.5S10.33 4.5 10 4.5L8.5 2L5.5 3.5L5.87 5.75C5.23 6.27 4.68 6.85 4.25 7.5L2.05 7.05L0.5 9.9L2.57 11.03C2.54 11.35 2.5 11.67 2.5 12S2.54 12.65 2.57 12.97L0.5 14.1L2.05 16.95L4.25 16.5C4.68 17.15 5.23 17.73 5.87 18.25L5.5 20.5L8.5 22L10 19.5C10.33 19.5 10.67 19.5 11 19.5S11.67 19.5 12 19.5L13.5 22L16.5 20.5L16.13 18.25C16.77 17.73 17.32 17.15 17.75 16.5L19.95 16.95L21.5 14.1L19.43 12.97Z" />
             </svg>
         </button>
         <button id="start" aria-label="Start">
@@ -166,7 +185,7 @@
                 <path fill="currentColor" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
             </svg>
         </button>
-       <button id="reset" aria-label="Reset">
+        <button id="reset" aria-label="Reset">
             <svg viewBox="0 0 24 24">
                 <path fill="currentColor" d="M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H5a7 7 0 1 1 7 7 7 7 0 0 1-1-.07v2.02A9 9 0 1 0 13 3Z"/>
             </svg>
@@ -186,7 +205,21 @@
         </div>
     </div>
 
+    <!-- 添加到主屏幕提示 -->
+    <div id="install-prompt">
+        为了获得更好的体验，请将此应用添加到主屏幕。
+        <button id="close-prompt">关闭</button>
+    </div>
+
     <script>
+        // 设置 --vh 变量，解决移动端 100vh 问题
+        function setVh() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+        window.addEventListener('resize', setVh);
+        setVh();
+
         let countdown;
         let timeRemaining = 60; // 默认 1 分钟（秒）
         let initialTime = 60;   // 存储用户设置的初始时间
@@ -201,6 +234,8 @@
         const timeInput = document.getElementById('time-input');
         const bgColorInput = document.getElementById('bg-color-input');
         const fontColorInput = document.getElementById('font-color-input');
+        const installPrompt = document.getElementById('install-prompt');
+        const closePromptButton = document.getElementById('close-prompt');
 
         // 以 mm:ss 格式显示时间
         function displayTime(seconds) {
@@ -265,6 +300,15 @@
 
         fontColorInput.addEventListener('input', () => {
             document.documentElement.style.setProperty('--timer-color', fontColorInput.value);
+        });
+
+        // 检测是否从主屏幕启动，显示提示
+        if (!window.navigator.standalone) {
+            installPrompt.style.display = 'block';
+        }
+
+        closePromptButton.addEventListener('click', () => {
+            installPrompt.style.display = 'none';
         });
 
         // 初始显示
