@@ -154,26 +154,32 @@
             transform: translateX(-50%);
             background-color: var(--control-bg-color);
             color: var(--control-text-color);
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 15px 25px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             z-index: 1001;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+            font-size: 1.2em;
         }
         .install-prompt button {
-            margin-left: 10px;
-            padding: 5px 10px;
+            margin-left: 15px;
+            padding: 8px 15px;
             background-color: var(--accent-color);
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 1em;
         }
         @media (orientation: portrait) {
             .settings-content {
                 width: 80%;
                 max-width: 300px;
+            }
+            .install-prompt {
+                font-size: 1em;
+                padding: 10px 20px;
             }
         }
     </style>
@@ -220,7 +226,7 @@
     </div>
 
     <div class="install-prompt" id="install-prompt">
-        手机显示时添加到主屏幕，能获得app级别的全屏体验。
+        <span>为了获得更好的体验，请将此应用添加到主屏幕。这样您可以以类似原生App的全屏模式打开它。</span>
         <button id="close-prompt">关闭</button>
     </div>
 
@@ -353,12 +359,14 @@
         cancelSettingsButton.addEventListener('click', () => {
             settingsPopup.style.display = 'none';
             document.body.style.overflow = '';
+            resetToDefaultSize();
         });
 
         saveSettingsButton.addEventListener('click', () => {
             settingsPopup.style.display = 'none';
             document.body.style.overflow = '';
             applySettings();
+            resetToDefaultSize();
         });
 
         startButton.addEventListener('click', startTimer);
