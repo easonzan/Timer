@@ -47,7 +47,7 @@
             height: calc(var(--vh) * 100);
         }
         #timer {
-            font-size: max(var(--timer-font-size), var(--timer-font-size-min));
+            font-size: calc(var(--vw) * 15);
             margin: 0;
             color: var(--timer-color);
             line-height: 1;
@@ -110,7 +110,7 @@
             background-color: #2c2c2c;
             padding: 1.5em;
             border-radius: 15px;
-            width: 100%;
+            width: 90%;
             max-width: 350px;
             text-align: center;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
@@ -136,15 +136,19 @@
             color: #fff;
             text-align: center;
         }
-        #close-settings {
+        .settings-buttons {
+            display: flex;
+            justify-content: space-between;
             margin-top: 1em;
+        }
+        .settings-buttons button {
             padding: 0.7em;
             background-color: var(--accent-color);
             color: #fff;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            width: 100%;
+            width: 48%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         @media (orientation: portrait) {
@@ -189,7 +193,10 @@
             <input type="color" id="bg-color-input" value="#000000"/>
             <label for="font-color-input">字体颜色</label>
             <input type="color" id="font-color-input" value="#FFFFFF"/>
-            <button id="close-settings">关闭</button>
+            <div class="settings-buttons">
+                <button id="cancel-settings">取消</button>
+                <button id="save-settings">保存</button>
+            </div>
         </div>
     </div>
 
@@ -223,7 +230,8 @@
         const timerDisplay = document.getElementById('timer');
         const settingsButton = document.getElementById('settings-button');
         const settingsPopup = document.getElementById('settings');
-        const closeSettingsButton = document.getElementById('close-settings');
+        const cancelSettingsButton = document.getElementById('cancel-settings');
+        const saveSettingsButton = document.getElementById('save-settings');
         const startButton = document.getElementById('start');
         const pauseButton = document.getElementById('pause');
         const resetButton = document.getElementById('reset');
@@ -318,7 +326,12 @@
             document.body.style.overflow = 'hidden';
         });
 
-        closeSettingsButton.addEventListener('click', () => {
+        cancelSettingsButton.addEventListener('click', () => {
+            settingsPopup.style.display = 'none';
+            document.body.style.overflow = '';
+        });
+
+        saveSettingsButton.addEventListener('click', () => {
             settingsPopup.style.display = 'none';
             document.body.style.overflow = '';
             applySettings();
