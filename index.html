@@ -12,7 +12,7 @@
         :root {
             --vh: 1vh;
             --vw: 1vw;
-            --timer-font-size: calc(var(--vw) * 45);
+            --timer-font-size: calc(var(--vw) * 40);
             --bg-color: #000000;
             --timer-color: #FFFFFF;
             --control-bg-color: #333;
@@ -137,7 +137,7 @@
             margin-top: 1em;
         }
         .settings-buttons button {
-            padding: 1.2em;
+            padding: 0.6em;
             background-color: var(--accent-color);
             color: #fff;
             border: none;
@@ -145,7 +145,30 @@
             cursor: pointer;
             width: 45%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            font-size: 1.4em;
+            font-size: 1.1em;
+        }
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--control-bg-color);
+            color: var(--control-text-color);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            z-index: 1001;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .install-prompt button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
         @media (orientation: portrait) {
             .settings-content {
@@ -196,6 +219,11 @@
         </div>
     </div>
 
+    <div class="install-prompt" id="install-prompt">
+        手机显示时添加到主屏幕，能获得app级别的全屏体验。
+        <button id="close-prompt">关闭</button>
+    </div>
+
     <script>
         function setVh() {
             let vh = window.innerHeight * 0.01;
@@ -203,8 +231,17 @@
             document.documentElement.style.setProperty('--vh', `${vh}px`);
             document.documentElement.style.setProperty('--vw', `${vw}px`);
         }
-        window.addEventListener('resize', setVh);
-        window.addEventListener('orientationchange', setVh);
+        function resetToDefaultSize() {
+            document.documentElement.style.setProperty('--timer-font-size', `calc(var(--vw) * 40)`);
+        }
+        window.addEventListener('resize', () => {
+            setVh();
+            resetToDefaultSize();
+        });
+        window.addEventListener('orientationchange', () => {
+            setVh();
+            resetToDefaultSize();
+        });
         setVh();
 
         let countdown;
@@ -224,6 +261,8 @@
         const timeInput = document.getElementById('time-input');
         const bgColorInput = document.getElementById('bg-color-input');
         const fontColorInput = document.getElementById('font-color-input');
+        const installPrompt = document.getElementById('install-prompt');
+        const closePromptButton = document.getElementById('close-prompt');
 
         let wakeLock = null;
 
@@ -320,7 +359,6 @@
             settingsPopup.style.display = 'none';
             document.body.style.overflow = '';
             applySettings();
-            alert('设置已生效');
         });
 
         startButton.addEventListener('click', startTimer);
@@ -338,6 +376,10 @@
             document.documentElement.style.setProperty('--bg-color', bgColorInput.value);
             document.documentElement.style.setProperty('--timer-color', fontColorInput.value);
         }
+
+        closePromptButton.addEventListener('click', () => {
+            installPrompt.style.display = 'none';
+        });
 
         displayTime(timeRemaining);
         timeInput.value = '1';
