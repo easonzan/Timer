@@ -2,23 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <!-- 适配移动设备 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- 启用全屏显示 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <!-- 设置状态栏颜色 -->
     <meta name="theme-color" content="#000000">
-    <!-- 链接到 manifest 文件 -->
     <link rel="manifest" href="manifest.json">
-    <!-- iOS 图标 -->
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
     <title>倒计时</title>
     <style>
         :root {
             --vh: 1vh;
             --vw: 1vw;
-            --timer-font-size: calc(var(--vh) * 35);
-            --timer-font-size-min: 20px;
+            --timer-font-size: calc(var(--vw) * 45);
             --bg-color: #000000;
             --timer-color: #FFFFFF;
             --control-bg-color: #333;
@@ -47,7 +41,7 @@
             height: calc(var(--vh) * 100);
         }
         #timer {
-            font-size: calc(var(--vw) * 35);
+            font-size: var(--timer-font-size);
             margin: 0;
             color: var(--timer-color);
             line-height: 1;
@@ -127,7 +121,7 @@
             color: #fff;
         }
         .settings-content input {
-            width: calc(100% - 1em);
+            width: calc(100% - 2em);
             padding: 0.5em;
             margin-bottom: 1em;
             border: none;
@@ -135,6 +129,7 @@
             background-color: #444;
             color: #fff;
             text-align: center;
+            box-sizing: border-box;
         }
         .settings-buttons {
             display: flex;
@@ -142,7 +137,7 @@
             margin-top: 1em;
         }
         .settings-buttons button {
-            padding: 1em;
+            padding: 1.2em;
             background-color: var(--accent-color);
             color: #fff;
             border: none;
@@ -150,7 +145,7 @@
             cursor: pointer;
             width: 45%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            font-size: 1.2em;
+            font-size: 1.4em;
         }
         @media (orientation: portrait) {
             .settings-content {
@@ -202,21 +197,11 @@
     </div>
 
     <script>
-        // 设置 --vh 和 --vw 变量，解决移动端 100vh 问题
         function setVh() {
             let vh = window.innerHeight * 0.01;
             let vw = window.innerWidth * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
             document.documentElement.style.setProperty('--vw', `${vw}px`);
-
-            // 检测屏幕方向
-            if (window.innerWidth < window.innerHeight) {
-                let timerFontSize = vw * 35;
-                document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
-            } else {
-                let timerFontSize = vh * 35;
-                document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
-            }
         }
         window.addEventListener('resize', setVh);
         window.addEventListener('orientationchange', setVh);
@@ -242,7 +227,6 @@
 
         let wakeLock = null;
 
-        // 申请屏幕唤醒锁
         async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
