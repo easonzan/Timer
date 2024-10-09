@@ -17,7 +17,7 @@
         :root {
             --vh: 1vh;
             --vw: 1vw;
-            --timer-font-size: calc(var(--vh) * 50); /* 默认字体大小，适应不同屏幕 */
+            --timer-font-size: calc(var(--vh) * 80);
             --bg-color: #000000;
             --timer-color: #FFFFFF;
             --control-bg-color: #333;
@@ -94,21 +94,22 @@
         .settings-popup {
             display: none;
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            top: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background-color: rgba(0, 0, 0, 0.9);
             justify-content: center;
             align-items: center;
+            padding: 1em;
             z-index: 1000;
+            overflow-y: auto;
         }
         .settings-content {
             background-color: #2c2c2c;
             padding: 1.5em;
             border-radius: 15px;
             width: 100%;
-            max-width: 90%;
+            max-width: 350px;
             text-align: center;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
         }
@@ -124,14 +125,14 @@
             color: #fff;
         }
         .settings-content input {
-            width: 100%;
+            width: calc(100% - 1em);
             padding: 0.5em;
             margin-bottom: 1em;
             border: none;
             border-radius: 5px;
             background-color: #444;
             color: #fff;
-            text-align: center;
+            text-align: center; /* 居中显示输入的数字 */
         }
         #close-settings {
             margin-top: 1em;
@@ -143,6 +144,28 @@
             cursor: pointer;
             width: 100%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--control-bg-color);
+            color: var(--control-text-color);
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1001;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #install-prompt button {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -184,15 +207,27 @@
         </div>
     </div>
 
+    <!-- 添加到主屏幕提示 -->
+    <div id="install-prompt">
+        添加到主屏幕可获得全屏显示的体验。
+        <button id="close-prompt">关闭</button>
+    </div>
+
     <script>
         function setVh() {
             let vh = window.innerHeight * 0.01;
             let vw = window.innerWidth * 0.01;
             document.documentElement.style.setProperty('--vh', `${vh}px`);
             document.documentElement.style.setProperty('--vw', `${vw}px`);
-            document.documentElement.style.setProperty('--timer-font-size', `${Math.min(vw * 40, vh * 80)}px`);
-        }
 
+            if (window.innerWidth < window.innerHeight) {
+                let timerFontSize = vw * 30;
+                document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
+            } else {
+                let timerFontSize = vh * 80;
+                document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
+            }
+        }
         window.addEventListener('resize', setVh);
         window.addEventListener('orientationchange', setVh);
         setVh();
@@ -200,6 +235,22 @@
         let countdown;
         let timeRemaining = 60;
         let initialTime = 60;
+        let isCountingUp = false;
+        let countUpStartTime = 0;
+
+        const timerDisplay = document.getElementById('timer');
+        const settingsButton = document.getElementById('settings-button');
+        const settingsPopup = document.getElementById('settings');
+        const closeSettingsButton = document.getElementById('close-settings');
+        const startButton = document.getElementById('start');
+        const pauseButton = document.getElementById('pause');
+        const resetButton = document.getElementById('reset');
+        const timeInput = document.getElementById('time-input');
+        const bgColorInput = document.getElementById('bg-color-input');
+        const fontColorInput = document.getElementById('font-color-input');
+        const installPrompt = document.getElementById('install-prompt');
+        const closePromptButton = document.getElementById('close-prompt');
+
         let wakeLock = null;
 
         async function requestWakeLock() {
@@ -210,6 +261,8 @@
                         console.log('Screen Wake Lock released');
                     });
                     console.log('Screen Wake Lock acquired');
+                } else {
+                    console.log('Screen Wake Lock API not supported');
                 }
             } catch (err) {
                 console.error(`${err.name}, ${err.message}`);
@@ -225,16 +278,20 @@
         }
 
         function displayTime(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const remainderSeconds = seconds % 60;
-            timerDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+            const absoluteSeconds = Math.abs(seconds);
+            const minutes = Math.floor(absoluteSeconds / 60);
+            const remainderSeconds = absoluteSeconds % 60;
+            const display = `${minutes < 10 ? '0' : ''}${minutes}:${remainderSeconds < 10 ? '0' : ''}${remainderSeconds}`;
+            timerDisplay.textContent = display;
         }
 
         function startTimer() {
             clearInterval(countdown);
+            isCountingUp = false;
             const now = Date.now();
             const then = now + timeRemaining * 1000;
             displayTime(timeRemaining);
+
             requestWakeLock();
 
             countdown = setInterval(() => {
@@ -243,7 +300,17 @@
                     displayTime(timeRemaining);
                 } else {
                     clearInterval(countdown);
+                    startCountUp();
                 }
+            }, 1000);
+        }
+
+        function startCountUp() {
+            isCountingUp = true;
+            countUpStartTime = Date.now();
+            countdown = setInterval(() => {
+                const elapsed = Math.round((Date.now() - countUpStartTime) / 1000);
+                displayTime(elapsed);
             }, 1000);
         }
 
@@ -255,6 +322,7 @@
         function resetTimer() {
             clearInterval(countdown);
             timeRemaining = initialTime;
+            isCountingUp = false;
             displayTime(timeRemaining);
             releaseWakeLock();
         }
@@ -283,11 +351,22 @@
             if (!isNaN(minutes) && minutes >= 0) {
                 timeRemaining = Math.round(minutes * 60);
                 initialTime = timeRemaining;
-                displayTime(timeRemaining);
+                isCountingUp = false;
+                resetTimer();
             }
+
             document.documentElement.style.setProperty('--bg-color', bgColorInput.value);
             document.documentElement.style.setProperty('--timer-color', fontColorInput.value);
+            document.documentElement.style.setProperty('--timer-font-size', `calc(var(--vh) * 80)`);
         }
+
+        if (!window.navigator.standalone) {
+            installPrompt.style.display = 'block';
+        }
+
+        closePromptButton.addEventListener('click', () => {
+            installPrompt.style.display = 'none';
+        });
 
         displayTime(timeRemaining);
         timeInput.value = '1';
