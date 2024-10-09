@@ -17,7 +17,7 @@
         :root {
             --vh: 1vh;
             --vw: 1vw;
-            --timer-font-size: calc(var(--vh) * 8);
+            --timer-font-size: calc(var(--vh) * 18);
             --timer-font-size-min: 20px;
             --bg-color: #000000;
             --timer-color: #FFFFFF;
@@ -47,7 +47,7 @@
             height: calc(var(--vh) * 100);
         }
         #timer {
-            font-size: calc(var(--vw) * 15);
+            font-size: calc(var(--vw) * 20);
             margin: 0;
             color: var(--timer-color);
             line-height: 1;
@@ -142,13 +142,13 @@
             margin-top: 1em;
         }
         .settings-buttons button {
-            padding: 0.7em;
+            padding: 0.5em;
             background-color: var(--accent-color);
             color: #fff;
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            width: 48%;
+            width: 45%;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
         @media (orientation: portrait) {
@@ -210,10 +210,10 @@
 
             // 检测屏幕方向
             if (window.innerWidth < window.innerHeight) {
-                let timerFontSize = vw * 30;
+                let timerFontSize = vw * 35;
                 document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
             } else {
-                let timerFontSize = vh * 8;
+                let timerFontSize = vh * 18;
                 document.documentElement.style.setProperty('--timer-font-size', `${timerFontSize}px`);
             }
         }
